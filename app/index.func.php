@@ -1,25 +1,22 @@
 <?php 
 
-include 'Article.php';
+include 'functions.php';
 
 session_start();
 
-$db = new mysqli('db', 'user', 'secret', 'rcs13-db');
-$article = new Article($db);
-
 $type = $_POST['type'] ?? '';
 
-$editableArticle = !empty($_GET['edit']) ? $article->edit($_GET['edit']) : [];
+$editableArticle = !empty($_GET['edit']) ? editArticle($_GET['edit']) : [];
 
 switch($type) {
     case 'createArticle':
-        $article->create($_POST);
+        createArticle($_POST);
         break;
     case 'updateArticle':
-        $article->update($_POST);
+        updateArticle($_POST);
         break;
     case 'deleteArticle':
-        $article->delete($_POST);
+        deleteArticle($_POST);
         break;
     default:
         break;
@@ -59,7 +56,7 @@ switch($type) {
 
     <table>
     <?php 
-        $result = $article->list();
+        $result = articlesResult();
         while($row = mysqli_fetch_assoc($result)) { ?>
         <tr>
             <td><?= $row['id']?></td>

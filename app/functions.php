@@ -1,6 +1,7 @@
 <?php
 
-$db = mysqli_connect('db', 'user', 'secret', 'rcs13-db');
+// $db = mysqli_connect('db', 'user', 'secret', 'rcs13-db');
+$db = new mysqli('db', 'user', 'secret', 'rcs13-db');
 
 function createArticle(array $data)
 {
@@ -10,7 +11,8 @@ function createArticle(array $data)
     $image = cleanup($data['image_url']);
     $body = cleanup($data['contents']);
 
-    mysqli_query($db, "INSERT INTO `articles` (`title`, `image_url`, `body`) VALUES ('$title', '$image', '$body')");
+    // mysqli_query($db, "INSERT INTO `articles` (`title`, `image_url`, `body`) VALUES ('$title', '$image', '$body')");
+    $db->query("INSERT INTO `articles` (`title`, `image_url`, `body`) VALUES ('$title', '$image', '$body')");
 }
 
 function editArticle($id)
@@ -18,7 +20,8 @@ function editArticle($id)
     global $db;
 
     $id = cleanup($id);
-    $editResult = mysqli_query($db, "SELECT * FROM `articles` WHERE `id` = $id");
+    // $editResult = mysqli_query($db, "SELECT * FROM `articles` WHERE `id` = $id");
+    $editResult = $db->query("SELECT * FROM `articles` WHERE `id` = $id");
 
     if (mysqli_num_rows($editResult) > 0) {
         return mysqli_fetch_assoc($editResult);
@@ -27,7 +30,7 @@ function editArticle($id)
     return [];
 }
 
-function updateArticle(array $data)
+function updateArticle(array $data) 
 {
     global $db;
 
@@ -36,7 +39,8 @@ function updateArticle(array $data)
     $image = cleanup($data['image_url']);
     $body = cleanup($data['contents']);
 
-    mysqli_query($db, "UPDATE `articles` SET `title` = '$title', `image_url` = '$image', `body` = '$body' WHERE `id`= $id");
+    // mysqli_query($db, "UPDATE `articles` SET `title` = '$title', `image_url` = '$image', `body` = '$body' WHERE `id`= $id");
+    $db->query("UPDATE `articles` SET `title` = '$title', `image_url` = '$image', `body` = '$body' WHERE `id`= $id");
 
 }
 
@@ -45,13 +49,15 @@ function deleteArticle(array $data)
     global $db;
 
     $id = cleanup($data['id']);
-    mysqli_query($db, "DELETE FROM `articles` WHERE `id`= $id");
+    // mysqli_query($db, "DELETE FROM `articles` WHERE `id`= $id");
+    $db->query("DELETE FROM `articles` WHERE `id`= $id");
 }
 
 function articlesResult()
 {
     global $db;
-    return mysqli_query($db, 'SELECT * FROM `articles`');
+    // return mysqli_query($db, 'SELECT * FROM `articles`');
+    return $db->query('SELECT * FROM `articles`');
 }
 
 function cleanup($value): string
@@ -61,7 +67,8 @@ function cleanup($value): string
         return '';
 
     $value = strip_tags($value);
-    $value = mysqli_real_escape_string($db, $value);
+    // $value = mysqli_real_escape_string($db, $value);
+    $value = $db->real_escape_string($value);
 
     return $value;
 }
